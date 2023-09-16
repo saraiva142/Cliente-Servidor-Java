@@ -13,5 +13,19 @@
           "path": "/path/to/jdk-17",
           "default": true
         },
+        {
+          "configurations": [
+            {
+              "type": "java",
+              "name": "Server",
+              "request": "launch",
+              "mainClass": "Server",
+              "projectName": "Teste1.0",
+              "classpath": [
+                "${workspaceFolder}/lib/sqlite-jdbc-3.20.0.jar"
+              ]
+            }
+          ]
+        }
       ]
 }
