@@ -21,7 +21,19 @@ public class Client {
             String msg2 = entrada.readLine();
             System.out.println(msg2);
 
-            // 5. Exemplo de cadastro de um novo usuário
+            // 5. Exemplo de autenticação
+            if (msg.startsWith("LOGIN")) {
+                String[] parts = msg.split(" ");
+                if (parts.length == 3) {
+                    String username = parts[1];
+                    String password = parts[2];
+                    System.out.println("Tentando autenticar...");
+                } else {
+                    System.out.println("Formato incorreto. Use: LOGIN nome senha");
+                }
+            }
+
+            // 6. Exemplo de cadastro de um novo usuário
             if (msg.startsWith("CADASTRAR")) {
                 String[] parts = msg.split(" ");
                 if (parts.length == 6) {

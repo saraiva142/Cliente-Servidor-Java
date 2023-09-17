@@ -2,6 +2,7 @@ import java.net.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.io.*;
 import java.util.Scanner;
@@ -48,7 +49,22 @@ public class Server {
                 } else {
                     saida.println("Formato incorreto. Use: INSERIR nome senha");
                 } 
-            } else if (msg.startsWith("CADASTRAR")) {
+            }
+            // 6. Autenticação do usuário
+            if (msg.startsWith("LOGIN")) {
+                String[] parts = msg.split(" ");
+                if (parts.length == 3) {
+                    String username = parts[1];
+                    String password = parts[2];
+                    if (authenticateUser(connection, username, password)) {
+                        saida.println("Autenticação bem-sucedida.");
+                    } else {
+                        saida.println("Falha na autenticação. Verifique nome de usuário e senha.");
+                    }
+                } else {
+                    saida.println("Formato incorreto. Use: LOGIN nome senha");
+                }
+            } else if (msg.startsWith("CADASTRAR")) { //Cadastrar informações do usuário
                 String[] parts = msg.split(" ");
                     if (parts.length == 6) {
                         String username = parts[1];
@@ -99,6 +115,21 @@ public class Server {
         } catch (SQLException e) {
             System.err.println("Erro ao cadastrar novo usuário: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    // Método para autenticar um usuário na tabela
+    private static boolean authenticateUser(Connection connection, String username, String password) {
+        String sql = "SELECT * FROM user WHERE name = ? AND passworld = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next(); // Retorna verdadeiro se um registro correspondente for encontrado
+        } catch (SQLException e) {
+            System.err.println("Erro na autenticação: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 
