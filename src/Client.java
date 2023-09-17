@@ -11,13 +11,30 @@ public class Client {
         BufferedReader entrada = new BufferedReader(new InputStreamReader(conexao.getInputStream()));
 
         while (true) {
+
             // 3.Client vai enviar mensagem para o Server
             System.out.println("Cliente >> ");
             String msg = new Scanner(System.in).nextLine();
             saida.println(msg);
+
             // 4. Receber os dados do Server
             String msg2 = entrada.readLine();
             System.out.println(msg2);
+
+            // 5. Exemplo de cadastro de um novo usuário
+            if (msg.startsWith("CADASTRAR")) {
+                String[] parts = msg.split(" ");
+                if (parts.length == 6) {
+                    String username = parts[1];
+                    String password = parts[2];
+                    String nome_completo = parts[3];
+                    String email = parts[4];
+                    String telefone = parts[5];
+                    System.out.println("Cadastro de usuário em andamento...");
+                } else {
+                    System.out.println("Formato incorreto. Use: CADASTRAR nome senha nome_completo email telefone");
+                }
+            }
         }
     }
 }

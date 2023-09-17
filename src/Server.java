@@ -36,22 +36,6 @@ public class Server {
             // 4. Receber os dados do cliente
             String msg = entrada.readLine();
             System.out.println(msg);
-            /*  5. Enviar resposta para o cliente
-            System.out.println("Servidor >> ");
-            String msg2 = new Scanner(System.in).nextLine();
-            saida.println(msg2);
-
-
-
-            // 6. Exemplo de inserção de um novo usuário na tabela
-            if (msg.startsWith("INSERIR")) {
-                String[] parts = msg.split(" ");
-                if (parts.length == 3) {
-                    String username = parts[1];
-                    String password = parts[2];
-                    insertUser(connection, username, password);
-                }
-            }*/
 
             // 5. Exemplo de inserção de um novo usuário na tabela
             if (msg.startsWith("INSERIR")) {
@@ -63,7 +47,20 @@ public class Server {
                     saida.println("Novo usuário inserido com sucesso.");
                 } else {
                     saida.println("Formato incorreto. Use: INSERIR nome senha");
-                }
+                } 
+            } else if (msg.startsWith("CADASTRAR")) {
+                String[] parts = msg.split(" ");
+                    if (parts.length == 6) {
+                        String username = parts[1];
+                        String password = parts[2];
+                        String nome_completo = parts[3];
+                        String email = parts[4];
+                        String telefone = parts[5];
+                        registerUser(connection, username, password, nome_completo, email, telefone);
+                        saida.println("Cadastro de usuário realizado com sucesso.");
+                    } else {
+                        saida.println("Formato incorreto. Use: CADASTRAR nome senha nome_completo email telefone");
+                    }
             } else {
                 // 6. Enviar resposta para o cliente
                 System.out.print("Servidor >> ");
@@ -87,6 +84,24 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+    // Método para cadastrar um novo usuário na tabela
+    private static void registerUser(Connection connection, String username, String password, String nome_completo, String email, String telefone) {
+        String sql = "INSERT INTO user (name, passworld, nome_completo, email, telefone) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.setString(3, nome_completo);
+            statement.setString(4, email);
+            statement.setString(5, telefone);
+            statement.executeUpdate();
+            System.out.println("Cadastro de novo usuário realizado com sucesso.");
+        } catch (SQLException e) {
+            System.err.println("Erro ao cadastrar novo usuário: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
