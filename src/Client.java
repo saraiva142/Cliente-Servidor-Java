@@ -13,6 +13,8 @@ public class Client {
         while (true) {
 
             // 3.Client vai enviar mensagem para o Server
+            System.out.println("Para Cadastrar Escreva: 'CADASTRAR usuario senha nome/sobrenome email telefone'");
+            System.out.println("Para fazer Login Escreva: 'LOGIN usuario senha'");
             System.out.println("Cliente >> ");
             String msg = new Scanner(System.in).nextLine();
             saida.println(msg);

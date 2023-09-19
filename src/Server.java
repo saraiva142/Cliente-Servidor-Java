@@ -57,12 +57,12 @@ public class Server {
                     String username = parts[1];
                     String password = parts[2];
                     if (authenticateUser(connection, username, password)) {
-                        saida.println("Autenticação bem-sucedida.");
+                        saida.println("Login Successful");
                     } else {
                         saida.println("Falha na autenticação. Verifique nome de usuário e senha.");
                     }
                 } else {
-                    saida.println("Formato incorreto. Use: LOGIN nome senha");
+                    saida.println("Login Failed. Use: LOGIN nome senha");
                 }
             } else if (msg.startsWith("CADASTRAR")) { //Cadastrar informações do usuário
                 String[] parts = msg.split(" ");
