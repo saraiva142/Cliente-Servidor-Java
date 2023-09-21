@@ -10,9 +10,17 @@ public class Client {
         PrintWriter saida = new PrintWriter(conexao.getOutputStream(), true);
         BufferedReader entrada = new BufferedReader(new InputStreamReader(conexao.getInputStream()));
 
+
+        // Após a criação da conexão TCP com o servidor
+        DatagramSocket udpSocket = new DatagramSocket(12345); // Porta para receber dados do servidor
+
+
+
+
         while (true) {
 
             // 3.Client vai enviar mensagem para o Server
+            System.out.println("Para obter dados financeiros, digite 'GET_DATA'");
             System.out.println("Para Cadastrar Escreva: 'CADASTRAR usuario senha nome/sobrenome email telefone'");
             System.out.println("Para fazer Login Escreva: 'LOGIN usuario senha'");
             System.out.println("Cliente >> ");
@@ -22,6 +30,21 @@ public class Client {
             // 4. Receber os dados do Server
             String msg2 = entrada.readLine();
             System.out.println(msg2);
+
+            if (msg.equals("GET_DATA")) {
+                // Aguarde a mensagem UDP do servidor
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                udpSocket.receive(receivePacket);
+                String udpMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        
+                // Processar os dados financeiros recebidos (exemplo: exibir na tela)
+                System.out.println("Dados Financeiros Recebidos: " + udpMessage);
+            } else {
+                // Receba a resposta do servidor via TCP (opcional)
+                String tcpResponse = entrada.readLine();
+                System.out.println("Resposta do servidor: " + tcpResponse);
+            }
 
             // 5. Exemplo de autenticação
             if (msg.startsWith("LOGIN")) {

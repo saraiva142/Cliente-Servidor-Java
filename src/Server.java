@@ -1,10 +1,13 @@
 import java.net.*;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Server {
@@ -32,11 +35,43 @@ public class Server {
         }
 
         
+            Socket clientSocket = server.accept();
+            System.out.println("Cliente conectado: " + clientSocket.getInetAddress());
 
+            // Crie uma nova thread para lidar com a conexão do cliente
+            ClientHandler clientHandler = new ClientHandler(clientSocket);
+            Thread thread = new Thread(clientHandler);
+            thread.start();
+        
+
+        // Após a criação da conexão TCP com o cliente
+        DatagramSocket udpSocket = new DatagramSocket();
+        
         while (true) {
             // 4. Receber os dados do cliente
             String msg = entrada.readLine();
             System.out.println(msg);
+
+            if (msg.equals("GET_DATA")) {
+                // Obtenha o preço das ações da Apple (AAPL) usando a classe YahooFinanceAPI
+                double stockPrice = YahooFinanceAPI.getStockPrice();
+
+                if (stockPrice >= 0) {
+                    // Formate a mensagem UDP e envie-a para o cliente (substitua pelo endereço IP e porta do cliente)
+                    InetAddress clientAddress = clientSocket.getInetAddress();
+                    int clientPort = 12345; // Porta do cliente
+                    String udpMessage = "AAPL: " + stockPrice;
+                    byte[] sendData = udpMessage.getBytes();
+                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientAddress, clientPort);
+                    udpSocket.send(sendPacket);
+
+                    // Envie também a mensagem via TCP para confirmação (opcional)
+                    System.out.println("Dados financeiros enviados: " + udpMessage);
+                } else {
+                    // Se ocorrer um erro ao obter o preço das ações
+                    System.out.println("Erro ao obter o preço das ações.");
+                }
+            }
 
             // 5. Exemplo de inserção de um novo usuário na tabela
             if (msg.startsWith("INSERIR")) {
@@ -134,6 +169,3 @@ public class Server {
     }
 
 }
-
-
-
